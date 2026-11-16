@@ -1,0 +1,82 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="container page">
+  <div class="page-head">
+    <div>
+      <p class="eyebrow">Overview</p>
+      <h1>Welcome back, <%= currentUser.name.split(' ')[0] %></h1>
+      <p class="muted">
+        <%= isAdmin
+          ? 'Manage the catalogue and keep an eye on every customer order.'
+          : 'Pick your favourite products and place an order in a few clicks.' %>
+      </p>
+    </div>
+    <div class="page-actions">
+      <a href="/products" class="btn">Browse products</a>
+      <% if (isAdmin) { %>
+        <a href="/products/new" class="btn btn-ghost">Add product</a>
+      <% } else { %>
+        <a href="/orders" class="btn btn-ghost">My orders</a>
+      <% } %>
+    </div>
+  </div>
+
+  <section class="stats-grid">
+    <% stats.forEach(function (stat) { %>
+      <article class="stat-card">
+        <span class="stat-label"><%= stat.label %></span>
+        <strong class="stat-value"><%= stat.value %></strong>
+        <span class="stat-hint"><%= stat.hint %></span>
+      </article>
+    <% }); %>
+  </section>
+
+  <div class="section-head">
+    <div>
+      <h2><%= isAdmin ? 'Latest orders' : 'Recent orders' %></h2>
+      <p class="muted"><%= isAdmin ? 'Newest customer activity across the store.' : 'Your latest purchases.' %></p>
+    </div>
+    <a href="/orders" class="link-arrow">View all →</a>
+  </div>
+
+  <% if (recentOrders.length === 0) { %>
+    <div class="empty-state card">
+      <span class="empty-icon">🛒</span>
+      <h3>No orders yet</h3>
+      <p class="muted">
+        <%= isAdmin ? 'Customer orders will appear here.' : 'Head to the catalogue and place your first order.' %>
+      </p>
+      <a href="/products" class="btn btn-small">Browse products</a>
+    </div>
+  <% } else { %>
+    <div class="table-wrap card">
+      <table>
+        <thead>
+          <tr>
+            <th>Order</th>
+            <% if (isAdmin) { %><th>Customer</th><% } %>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recentOrders.forEach(function (order) { %>
+            <tr>
+              <td><a class="strong-link" href="/orders/<%= order.id %>">#<%= order.id %></a></td>
+              <% if (isAdmin) { %><td><%= order.customer_name %></td><% } %>
+              <td class="muted"><%= formatDate(order.created_at) %></td>
+              <td><%= money(order.total) %></td>
+              <td><span class="status status-<%= order.status %>"><%= order.status %></span></td>
+              <td class="cell-action"><a href="/orders/<%= order.id %>" class="btn btn-ghost btn-small">View</a></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,45 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main class="container page auth-page">
+  <section class="auth-card card">
+    <div class="auth-intro">
+      <p class="eyebrow">Get started</p>
+      <h1>Create your account</h1>
+      <p class="muted">Sign up as a customer to place and track orders.</p>
+    </div>
+
+    <% if (errors.length > 0) { %>
+      <div class="alert alert-error">
+        <ul class="alert-list">
+          <% errors.forEach(function (message) { %><li><%= message %></li><% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+    <form action="/register" method="post" class="stack">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input id="name" type="text" name="name" value="<%= values.name || '' %>" maxlength="80" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" type="email" name="email" value="<%= values.email || '' %>" maxlength="190" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" minlength="6" autocomplete="new-password" required>
+        <small class="hint">Use at least 6 characters.</small>
+      </div>
+      <div class="field">
+        <label for="confirmPassword">Confirm password</label>
+        <input id="confirmPassword" type="password" name="confirmPassword" minlength="6" autocomplete="new-password" required>
+      </div>
+      <button type="submit" class="btn btn-block">Create account</button>
+    </form>
+
+    <p class="auth-switch muted">Already registered? <a href="/login">Log in</a></p>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>

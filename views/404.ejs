@@ -1,0 +1,13 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="container page">
+  <div class="empty-state card">
+    <span class="empty-icon">🧭</span>
+    <h1>Page not found</h1>
+    <p class="muted">The page you are looking for does not exist or may have been moved.</p>
+    <a href="<%= currentUser ? '/dashboard' : '/login' %>" class="btn">Go to <%= currentUser ? 'dashboard' : 'login' %></a>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

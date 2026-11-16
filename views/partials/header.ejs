@@ -1,0 +1,49 @@
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="<%= currentUser ? '/dashboard' : '/login' %>">
+      <span class="brand-mark">O</span>
+      <span class="brand-text">Orderly<small>Product ordering</small></span>
+    </a>
+
+    <nav class="nav-links">
+      <% if (currentUser) { %>
+        <a href="/dashboard" class="<%= currentPath === '/dashboard' ? 'active' : '' %>">Dashboard</a>
+        <a href="/products" class="<%= currentPath.indexOf('/products') === 0 ? 'active' : '' %>">Products</a>
+        <a href="/cart" class="<%= currentPath === '/cart' ? 'active' : '' %>">
+          Cart
+          <% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %>
+        </a>
+        <a href="/orders" class="<%= currentPath.indexOf('/orders') === 0 ? 'active' : '' %>">
+          <%= currentUser.role === 'admin' ? 'All orders' : 'My orders' %>
+        </a>
+        <% if (currentUser.role === 'admin') { %>
+          <a href="/products/new" class="<%= currentPath === '/products/new' ? 'active' : '' %>">Add product</a>
+        <% } %>
+      <% } else { %>
+        <a href="/login" class="<%= currentPath === '/login' ? 'active' : '' %>">Log in</a>
+        <a href="/register" class="btn btn-small"><%= 'Create account' %></a>
+      <% } %>
+    </nav>
+
+    <% if (currentUser) { %>
+      <div class="nav-user">
+        <span class="user-chip">
+          <span class="avatar"><%= currentUser.name.charAt(0).toUpperCase() %></span>
+          <span class="user-meta">
+            <strong><%= currentUser.name %></strong>
+            <small><%= currentUser.role === 'admin' ? 'Administrator' : 'Customer' %></small>
+          </span>
+        </span>
+        <form action="/logout" method="post">
+          <button type="submit" class="btn btn-ghost btn-small">Log out</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+
+  <% if (flash) { %>
+    <div class="container">
+      <div class="alert alert-<%= flash.type %>" role="status"><%= flash.message %></div>
+    </div>
+  <% } %>
+</header>

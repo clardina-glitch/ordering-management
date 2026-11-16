@@ -1,0 +1,65 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main class="container page">
+  <div class="page-head">
+    <div>
+      <p class="eyebrow"><%= isAdmin ? 'Admin' : 'History' %></p>
+      <h1><%= isAdmin ? 'All customer orders' : 'My orders' %></h1>
+      <p class="muted">
+        <%= isAdmin ? 'Search orders and update their status.' : 'Every order you have placed, newest first.' %>
+      </p>
+    </div>
+    <a href="/products" class="btn">Browse products</a>
+  </div>
+
+  <form action="/orders" method="get" class="search-form card">
+    <input type="search" name="q" value="<%= q %>" placeholder="Search by order number, customer, product or status…" aria-label="Search orders">
+    <button type="submit" class="btn">Search</button>
+    <% if (q) { %><a href="/orders" class="btn btn-ghost">Clear</a><% } %>
+  </form>
+
+  <p class="result-count muted">
+    <%= orders.length %> order<%= orders.length === 1 ? '' : 's' %><%= q ? ` matching “${q}”` : '' %>
+  </p>
+
+  <% if (orders.length === 0) { %>
+    <div class="empty-state card">
+      <span class="empty-icon">📦</span>
+      <h3>No orders found</h3>
+      <p class="muted"><%= q ? 'Try a different search term.' : 'Orders will show up here once placed.' %></p>
+      <% if (q) { %><a href="/orders" class="btn btn-small">Show all orders</a><% } else { %><a href="/products" class="btn btn-small">Start an order</a><% } %>
+    </div>
+  <% } else { %>
+    <div class="table-wrap card">
+      <table>
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Date</th>
+            <% if (isAdmin) { %><th>Customer</th><% } %>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orders.forEach(function (order) { %>
+            <tr>
+              <td><a class="strong-link" href="/orders/<%= order.id %>">#<%= order.id %></a></td>
+              <td class="muted"><%= formatDate(order.created_at) %></td>
+              <% if (isAdmin) { %><td><%= order.customer_name %></td><% } %>
+              <td><%= order.item_count %></td>
+              <td><%= money(order.total) %></td>
+              <td><span class="status status-<%= order.status %>"><%= order.status %></span></td>
+              <td class="cell-action"><a href="/orders/<%= order.id %>" class="btn btn-ghost btn-small">View</a></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</main>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,80 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main class="container page">
+  <div class="page-head">
+    <div>
+      <p class="eyebrow">Catalogue</p>
+      <h1>Available products</h1>
+      <p class="muted">Choose a product, set the quantity and add it to your order.</p>
+    </div>
+    <% if (isAdmin) { %>
+      <div class="page-actions">
+        <a href="/products/new" class="btn">Add product</a>
+      </div>
+    <% } %>
+  </div>
+
+  <form action="/products" method="get" class="search-form card">
+    <input type="search" name="q" value="<%= q %>" placeholder="Search products by name or description…" aria-label="Search products">
+    <button type="submit" class="btn">Search</button>
+    <% if (q) { %><a href="/products" class="btn btn-ghost">Clear</a><% } %>
+  </form>
+
+  <p class="result-count muted">
+    <%= products.length %> product<%= products.length === 1 ? '' : 's' %>
+    <%= q ? `matching “${q}”` : 'in the catalogue' %>
+  </p>
+
+  <% if (products.length === 0) { %>
+    <div class="empty-state card">
+      <span class="empty-icon">🔍</span>
+      <h3>No products found</h3>
+      <p class="muted">Try a different search term.</p>
+      <a href="/products" class="btn btn-small">Show all products</a>
+    </div>
+  <% } else { %>
+    <section class="product-grid">
+      <% products.forEach(function (product) { %>
+        <article class="product-card card">
+          <div class="product-thumb"><%= product.image %></div>
+          <div class="product-body">
+            <div class="product-title-row">
+              <h3><%= product.name %></h3>
+              <span class="price"><%= money(product.price) %></span>
+            </div>
+            <p class="muted product-desc"><%= product.description || 'No description provided.' %></p>
+
+            <% if (product.stock < 1) { %>
+              <span class="badge badge-out">Out of stock</span>
+            <% } else if (product.stock < 10) { %>
+              <span class="badge badge-warn">Only <%= product.stock %> left</span>
+            <% } else { %>
+              <span class="badge badge-ok"><%= product.stock %> in stock</span>
+            <% } %>
+
+            <form action="/cart/add" method="post" class="add-form">
+              <input type="hidden" name="product_id" value="<%= product.id %>">
+              <label class="qty">
+                <span>Qty</span>
+                <input type="number" name="quantity" value="1" min="1" max="<%= product.stock %>" <%= product.stock < 1 ? 'disabled' : '' %>>
+              </label>
+              <button type="submit" class="btn btn-small" <%= product.stock < 1 ? 'disabled' : '' %>>Add to order</button>
+            </form>
+
+            <% if (isAdmin) { %>
+              <div class="admin-actions">
+                <a href="/products/<%= product.id %>/edit" class="btn btn-ghost btn-small">Edit</a>
+                <form action="/products/<%= product.id %>/delete" method="post" data-confirm="Delete “<%= product.name %>”? This cannot be undone.">
+                  <button type="submit" class="btn btn-danger btn-small">Delete</button>
+                </form>
+              </div>
+            <% } %>
+          </div>
+        </article>
+      <% }); %>
+    </section>
+  <% } %>
+</main>
+
+<%- include('../partials/footer') %>

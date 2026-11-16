@@ -1,0 +1,13 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main class="container page">
+  <div class="empty-state card">
+    <span class="empty-icon">⚠️</span>
+    <h1>Something went wrong</h1>
+    <p class="muted"><%= message %></p>
+    <a href="<%= currentUser ? '/dashboard' : '/login' %>" class="btn">Try again</a>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

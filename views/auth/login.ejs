@@ -1,0 +1,38 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+
+<main class="container page auth-page">
+  <section class="auth-card card">
+    <div class="auth-intro">
+      <p class="eyebrow">Welcome back</p>
+      <h1>Log in to Orderly</h1>
+      <p class="muted">Browse the catalogue, build an order and track your purchases.</p>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <form action="/login" method="post" class="stack">
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" type="email" name="email" value="<%= email %>" autocomplete="email" required autofocus>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-block">Log in</button>
+    </form>
+
+    <p class="auth-switch muted">New here? <a href="/register">Create an account</a></p>
+
+    <div class="demo-box">
+      <strong>Demo accounts</strong>
+      <span>Admin: admin@example.com / admin123</span>
+      <span>Customer: customer@example.com / customer123</span>
+    </div>
+  </section>
+</main>
+
+<%- include('../partials/footer') %>
