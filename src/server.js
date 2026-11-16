@@ -3,6 +3,7 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
 const pool = require('./db');
 const asyncHandler = require('./utils/asyncHandler');
@@ -24,15 +25,35 @@ app.set('views', path.join(__dirname, '..', 'views'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+const sessionStore = new MySQLStore(
+  {
+    clearExpired: true,
+    checkExpirationInterval: 900000,
+    expiration: 1000 * 60 * 60 * 24 * 7,
+    createDatabaseTable: true,
+    schema: {
+      tableName: 'sessions',
+      columnNames: {
+        session_id: 'session_id',
+        expires: 'expires',
+        data: 'data'
+      }
+    }
+  },
+  pool
+);
+
 app.use(
   session({
     name: 'ordering.sid',
     secret: process.env.SESSION_SECRET || 'dev-only-secret-change-me',
+    store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
       sameSite: 'lax',
+      secure: 'auto',
       maxAge: 1000 * 60 * 60 * 24 * 7
     }
   })
